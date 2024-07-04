@@ -1,4 +1,5 @@
 #THIS FILE WILL NOT RUN PROPERLY .  This is simply notes 
+#Spelling errors are expected, if confused, reference the actual w3schools website (or any other source)
 
 
 #Indentation is extreamly important for Python as the language relies on spacing instead of traditional brackets. Ex. 4 spaces is traditional for if else statements
@@ -1238,53 +1239,557 @@ class Student(Person):
 #An iterator is an object that can be iterated upon (able to be traversed)
 #Technically, in Python, an iterator is an object which implements the iterator protocol, which consist of the methods __iter__() and __next__()
 
-#https://www.w3schools.com/python/python_iterators.asp
+# An iterator is an object which implements the iterator protocal, which consists of the methods __iter__() and __next__()
+#Both methods are automatically in iretable objects
+
+# __iter__() Returns the iterator object itself (Laymans terms, a specific instance of a list or the value of an index in an iratable object)
+# __next__() Helps to move on to the next iterator in a iretable
+
+#Iterator vs iterable
+
+#Lists, tuples, and dictionaries are all iterable objects.  Even strings are iterable objects 
+
+mystr = "banana"
+myit = iter(mystr) #Creates the iterator (The state of an object that is prepared to be iterated over by using the next() method)
+#This line is crutial as mystr is an iterable, NOT an iterator.  Meaning that it can not use the next() method
+
+print(next(myit)) #First next method will always start at the begining. This prints out b
+print(next(myit))
+print(next(myit))
+print(next(myit))
+print(next(myit))
+print(next(myit))# This is the last next method, printing a
+
+#Since the key feature of an iterator is maintaing a state, a for loop (like in previous examples) can replicate the exact same result
+
+a_tuple = ("apple", "rice", "hello)")
+
+for x in a_tuple: #Creates the iterator
+  print(x) #Acts as the next() method
+
+#Similar to the __init__() and __str__() methods, both __iter__() and __next__() can be customized within a class
+
+#__iter__() Always returns the iterator object itself (Kinda like the index/position it is in within the object)
+#__next__() customizes the behavior of how an object is traversed through.  Must always return the next item in the sequence. 
 
 
+class MyNumbers:
+  def __iter__(self):
+    self.a = 1 #Declares the first 'index' to traverse through
+    return self #Returns the above value, is only called once throughout this entire process
+
+  def __next__(self):
+    x = self.a
+    self.a += 1 #This line is customizable.  You can instead iterate twice if you want
+    return x 
+
+myclass = MyNumbers()
+myiter = iter(myclass) #Makes myclass into an iterator with the value of '1'
+
+print(next(myiter)) # Prints out 1
+print(next(myiter))
+print(next(myiter))
+print(next(myiter))
+print(next(myiter)) #Prints out 5
+
+#StopIteration
+
+#If you had enough next() statements, the loop would run forever, leading to a run time error
+#You can prevent this by using a condition to raise the StopIteration statement (Which ends the next() method)
+#Typically, you would use a terminating statement that meets the criteria of something
+
+#You can also apply this to strings or any other iterable 
+class string:
+  def __init__(self, string):
+    self.word = string
+ 
+  def __iter__(self):
+    self.index = 0
+    return self
+  
+  def __next__(self):
+    if self.index < len(self.word): #Terminating statement: Program wants to guarentee that it ends when the index exceeds the length of the word 
+      x = self.word[self.index]
+      self.index += 1
+      return x 
+    else:
+      raise StopIteration #When the index is greater than the word, it ends the iterator just so a next() method cant be called again. 
+    
+bannana = string("Taco")
+iterator = iter(bannana)
+
+print(next(iterator))
+print(next(iterator))
+print(next(iterator))
+print(next(iterator))
 
 
+#Polymorphism #############################################################################################################################################################
 
 
+#Polymorphism refers to methods/functions/operators with the same name that can be execuited on many objects or classes
+# len() method is a great example of this
+ 
+word = "HellO"
+print(len(word)) #Simply just prints out the number of characters in the string (5)
+
+list = ["Hello", "World", "Lol"]
+print(len(list)) #Prints out the length of the list 
+
+#Lets look at two classes with methods with the same name but different functions
+
+class hot_dog:
+  def __init__(self, price, heat):
+    self.cost = price
+    self.temp = heat
+
+  def eating(self):
+    print("Hello I am eating this HOT DOG that is " + str(self.cost) + " dollars and it is " + str(self.temp))
+  
+class noodles:
+  def __init__(self, price, weight):
+    self.cost = price
+    self.pounds = weight
+  
+  def eating(self):
+    print("Hello, I am eating this bowl of noodles that costs " + str(self.cost) + " dollars and weights about " + str(self.pounds) + " pounds")
+
+sandwich = hot_dog(2.99, 99)
+soup = noodles(3.33, 2)
+
+for x in (sandwich, soup):
+  x.eating() #References the unique method eating() of both classes
+
+#Referencing the instances of the classes works aswell
+sandwich.eating()
+soup.eating()
+
+#Polymorphism also works within inheritance
+#Polymorphism takes shape when a inherited method is overrided with new content within the child class
+
+class Vehicle:
+  def __init__(self, brand, model):
+    self.brand = brand
+    self.model = model
+
+  def move(self):
+    print("Move!")
+
+class Car(Vehicle):
+  pass
+
+class Boat(Vehicle):
+  def move(self): #Overrided content, now considered as polymorphism 
+    print("Sail!")
+
+car1 = Car("Ford", "Mustang") #Create a Car object
+boat1 = Boat("Ibiza", "Touring 20") #Create a Boat object
+
+for x in (car1, boat1):
+  print(x.brand)
+  print(x.model)
+  x.move()
 
 
+#Python Scope ################################################################################################################################################################
 
 
+#A variable is only available from inside the region is was created in.  This is called a scope
+
+#A variable created inside a function is called a local scope, and can only be used in that function
+def a_function():
+  x = 300
+  print(x)
+a_function()
+
+#Function inside a function
+#The variable in the example above cannot be accessed outside of the function.  However, if a function is within the same scope as that variable, it can be used
+
+def function1():
+  x = 300
+  def innnerFunction(): #Visualize it, since both the variable and function are on the same line, the function is able to access the variable
+    print(x)
+  innnerFunction()
+function1()
+
+#Global scope
+#A variable created in the main body of the Python code is considered as a global variable, and belongs to the global scope
+x = 300
+def a_function():
+  print(x)
+a_function()
+print(x)
+
+#Everything above can access the x variable
+
+#Naming conventions
+
+#If two variables have the same name, but are in different scopes, python will treat them as two separate variables
+
+x = 300
+def function():
+  x = 200
+  print(x) #Prints 200 as the variable in the local scope kinda overrides the global variable
+function()
+print(x) #Prints out 300
+
+#Global keyword
+#If you need to create a global variable within a local scope, you can use the global keyword
+
+def funtion():
+  global x 
+  x = 300
+
+function()
+print(x)
+
+#You can also use the global keyword to change the value within a local scope 
+
+x = 300
+def funtion():
+  global x #Directly accesses the global variable
+  x = 200
+
+function()
+print(x)
+
+#Nonlocal Keyword
+#Used to work with variables inside nested functions
+#This keyword makes the variable belong to the outer function
+
+def myfunc1():
+  x = "Jane"
+  def myfunc2():
+    nonlocal x #This makes the variable x belong to the outer scope of the function
+    x = "hello"
+  myfunc2()
+  return x # Prints out hello
+
+print(myfunc1())
 
 
+#Python Modules ###########################################################################################################################################################
+
+#A module is similar to a code libray
+#It's a file containing a set of functions you want to include into a program or application
+#It's like combining two python files into one
+
+#There are several built-in modules with their own unique instructions
+
+#To create a module, save the code in a file with the extension of .py
+#The module file can be whatever you want it to be. Keep in mind that the naming convention must be consistent throughout the Python file
+#Look in module.py file
+
+#You can use modules by using the import statement
+
+import module
+
+module.greeting("Jonathan") #When using a function from a module, you must reference the name of the file and THEN the function
+
+a = module.person1["age"] #Modules can contain anything
+print(a)
+
+#Re-naming a module is easy by using the "as" keyword
+
+import module as mx
+a = mx.person1["age"]
+print(a)
+
+#dir()
+#There's a built-in function to list all the function and variable names in a module
+x = dir(module)
+print(x)
+
+#Selective importing
+#Maybe you want to import certain items from a module
+#This can be achieved using the 'from' keyword
+
+from module import person1 
+print(person1["age"])
 
 
+#Python DateTime#############################################################################################################################################################
+#Dates/times aren't data types of their own, but we can import a module named datetime to work with them as objects
+
+import datetime
+x = datetime.datetime.now()
+print(x) #Ex. 2024-07-04 17:03:05.833837
+#This will print out the year, month, day, hour, minute, second, and microsecond
+
+#There are several methods to do individual things such as grabbing just the time of day 
+#Ex.
+print(x.year)
+
+#Creating Date objects
+#To create a date, we can use the datetime() class
+
+x = datetime.datetime(2020, 5, 13) #Year, Month, Day
+print(x) #Prints out 2020-5-13 00:00:00
+
+#datetime() can take optional parameters for time and timezone (hour, minute, second, microsecond, tzone)
+#By default, they have a value of 0
+
+#There is a method for formatting date objects into readable strings
+#The method is strftime() and takes in a single parameter to specify the format of the returned string
+
+x = datetime.datetime(2018, 6, 1)
+print(x.strftime("%B")) #In this example, %B , formats the string to be the full version of the month name
 
 
+#Python Math #################################################################################################################################################
+
+#Python has a set of built in math functions including a math module
+
+y = min(5, 2, 4,4,2) #Finds the lowest value in an iterable
+x = max(5, 2, 4,4,2) #Finds the highest value in an iterable
+x = abs(-7.25) # returns the positive value of the specified number
+x = pow(4,3) #Reutnrs the value of the first parameter to the power of the second one
+
+#Math Module
+#To use it, you use the import keyword along with math
+import math
+#There are several operations within this module
+#Here are a few examples
+x = math.sqrt(64) #Returns the square root of the parameter
+x = math.ceil(1.4) #Rounds the float point upward to the nearest integer, so it returns 2
+x = math.floor(1.4)# Rounds the float point downward to the nearest integer, so it returns 1
+x = math.pi #Returns the mathematical constant pi or 3.14~
 
 
+#Python JSON #################################################################################################################################################################
+
+#JSON is a syntax for storing and exchanging data
+#JSON is text, written with JavaScript object notation
+
+#Python has a built-int package called json, which can be used to work with JSON data
+import json
+
+#Parse JSON (Converting JSON formatted strings into a Python data structure)
+
+#If you have a JSON string, you can parse it by using the json.loads() method
+#It will result in a Python dictionary
+
+# some JSON:
+x =  '{ "name":"John", "age":30, "city":"New York"}'
+
+# parse x:
+y = json.loads(x)
+
+# the result is a Python dictionary:
+print(y["age"])
+
+#Convert from Python to JSON
+# a Python object (dict):
+x = {
+  "name": "John",
+  "age": 30,
+  "city": "New York"
+}
+
+# convert into JSON:
+y = json.dumps(x)
+
+# the result is a JSON string:
+print(y)
+
+#The following Python objects can be converted to JSON Strings
+#dict
+#list
+#tuple
+#string
+#int
+#float
+#True
+#False
+#None
+
+#Example
+print(json.dumps({"name": "John", "age": 30}))
+print(json.dumps(["apple", "bananas"]))
+print(json.dumps(("apple", "bananas")))
+print(json.dumps("hello"))
+print(json.dumps(42))
+print(json.dumps(31.76))
+print(json.dumps(True))
+print(json.dumps(False))
+print(json.dumps(None))
+
+#When converting from python to JSON and vice versa, these are the equivalent data types
+#Python	JSON
+#dict	Object
+#list	Array
+#tuple	Array
+#str	String
+#int	Number
+#float	Number
+#True	true
+#False	false
+#None	null
+
+#Example of converting a Python object containing all the legal data types 
+x = {
+  "name": "John",
+  "age": 30,
+  "married": True,
+  "divorced": False,
+  "children": ("Ann","Billy"),
+  "pets": None,
+  "cars": [
+    {"model": "BMW 230", "mpg": 27.5},
+    {"model": "Ford Edge", "mpg": 24.1}
+  ]
+}
+print(json.dumps(x))
+
+#To format results into a readable format, you would use the indent parameter
+json.dumps(x, indent=4)
+
+#You can also define the separators
+json.dumps(x, indent=4, separators=(". ", " = "))
+
+#Use sort_keys parameter to specify if the result should be sorted or not
+json.dumps(x, indent=4, sort_keys=True)
 
 
+#Python Try...Except ##############################################################################################################################################################
+
+#Try block lets you test a block of code for errors
+#Except block lets you handle the error
+#Else block lets you execute code when there is no error
+#finally block lets you execute code, regardless of the result of the try and except blocks
+
+#Exception Handling
+#When an error occurs(aka exception) Python will normally stop and generate an error message
+#These exceptions can be handled by using the try statement
+
+#Ex.
+try:
+  print(x) #In this example, x is not defined (Ignore the rest of the program)
+except:
+  print("An exception occured")
+
+#Since they try block raises an error, the except block will be executed
+#Without the try block, th eprogrma will crash and raise an error
+
+#Several Exceptions
+#You can define as many exception blocks as you want
+try:
+  print(x)
+except NameError:
+  print("Variable x is not defined")
+except:
+  print("Something else went wrong")
+
+#Else
+#You can use the else ekyword to define a block fo code to be executed if no errors were raised
+try: 
+  print("Hello") #In this example, nothing went wrong
+except:
+  print("Something went wrong")
+else: #Only runs with no exceptions occured
+  print("Nothing went wrong") #So this will print instead
+
+#Finally
+#The finally block, will be executed regardless if the try blockr aises an error or not
+try:
+  print(x)
+except:
+  print("Something went wrong")
+finally:
+  print("The 'try except' is finished")
+
+#Raise an exception
+#You can choose to throw an exception if a condition occurs
+#To throw (or raise) an exception, use the raise keyword
+
+x = -1
+if x < 0:
+  raise Exception("Sorry, no numbers below zero")
+
+#The 'raise' keyword is used to raise an exception
+
+#You can define what kind of error to raise, and the text to print to the user
+x = "hello"
+
+if not type(x) is int:
+  raise TypeError("Only integers are allowed")
 
 
+#Python User Input ###########################################################################################################################################################
 
 
+#Python allows for user input by having the program ask the user for input
+#Python may be different
+#For example, Python 3.6 uses the input() method
+#Python 2.7 uses the raw_input() method
+
+username = input("Enter username:")
+print("Username is: " + username)
+
+#Python 2.7 ONLY username = raw_input("Enter username:")
+print("Username is: " + username)
 
 
+#Python String Formatting #######################################################################################################################################################
+#F - String allows you to format select parts of a string
+
+#To specify a string as an f-string, simply put an f in front of the string literal
+txt = f"The price is 49 dollars"
+print(txt)
+
+#To format values (insert variables) add placeholders {}, which is able to contain variables,operations, function
+
+price = 59
+txt = f"The price is {price} dollars"
+print(txt)
+
+#A placeholder can also include a modifier to format the value by adding a colon followed by a legal fromatting type,
+#Such as .2f which means fixed point number with 2 decimals
+
+price = 59
+txt = f"The price is {price:.2f} dollars" #Uses 59.00
+print(txt)
+
+#You also don't need a placeholder variable, you can directly suppliment the value into the fstring
+txt = f"The price is {95:.2f} dollars"
+print(txt)
+
+#Operations
+#You can  preform Python operations inside the placeholders
+#You can do math operations
+txt = f"The price is {20 * 59} dollars"
+print(txt)
+
+#You can preform math operations on variables 
+price = 59
+tax = 0.25
+txt = f"The price is {price + (price * tax)} dollars"
+print(txt)
+
+#You can preform if...else statements inside the placeholders:
+price = 49
+txt = f"It is very {'Expensive' if price>50 else 'Cheap'}"
+print(txt)
+
+#Functions
+#You can execute functions inside the placeholder
+fruit = "apples"
+txt = f"I love {fruit.upper()}"
+print(txt)
+
+#Another example
+def myconverter(x):
+  return x * 0.3048
+
+txt = f"The plane is flying at a {myconverter(30000)} meter altitude"
+print(txt)
+
+#There are a plethora of modifiers within fstrings
+#Earlier we saw the modifier .2f 
+price = 59000
+txt = f"The price is {price:,} dollars"
+print(txt)
+#This example shows a common being used as a thousand separator
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#End ####################################################################################################################################################################
